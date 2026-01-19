@@ -4,6 +4,8 @@ import Navbar from './components/BarraNavegacion';
 import CartDrawer from './components/CarritoLateral'; 
 import Home from './pages/Inicio';
 import Catalog from './pages/Catalogo';
+import Pruebas from './pages/Pruebas'; // <--- 1. AGREGA ESTA IMPORTACIÓN
+
 // Asegúrate de que useCarrito.js esté dentro de una carpeta hooks o ajusta esta ruta:
 import { useCarrito } from './hooks/useCarrito';
 import { Phone, MessageCircle } from 'lucide-react';
@@ -11,7 +13,6 @@ import { Phone, MessageCircle } from 'lucide-react';
 function App() {
   const [vistaActual, setVistaActual] = useState("inicio");
   
-  // Ahora esto funcionará correctamente porque los nombres coinciden con el Hook
   const { 
     carrito, isCarritoAbierto, setIsCarritoAbierto, agregarAlCarrito, 
     eliminarDelCarrito, actualizarCantidad, totalCarrito 
@@ -38,8 +39,7 @@ function App() {
           <>
             <Home setVistaActual={setVistaActual} />
             <div className="py-10">
-                <div className="text-center mb-8">
-                </div>
+                <div className="text-center mb-8"></div>
                 <Catalog
                   agregarAlCarrito={agregarAlCarrito}
                   modo="favoritos"
@@ -54,6 +54,11 @@ function App() {
         
         {vistaActual === 'catalogo' && (
            <Catalog agregarAlCarrito={agregarAlCarrito} />
+        )}
+
+        {/* 2. AGREGA ESTA SECCIÓN PARA LA NUEVA PÁGINA */}
+        {vistaActual === 'pruebas' && (
+           <Pruebas setVistaActual={setVistaActual} />
         )}
         
         {vistaActual === 'contacto' && (
@@ -88,6 +93,13 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 text-center md:text-left">
             <h3 className="text-white font-bold text-lg mb-1">FG STORE EC</h3>
             <p className="text-sm opacity-60">Pasión por el detalle a escala.</p>
+            {/* Opción rápida en el footer para ir a pruebas */}
+            <button 
+              onClick={() => setVistaActual('pruebas')} 
+              className="text-xs text-red-400 mt-2 hover:underline cursor-pointer"
+            >
+              Ver Galería de Envíos
+            </button>
         </div>
       </footer>
     </div>
