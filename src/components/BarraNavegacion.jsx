@@ -30,7 +30,7 @@ export default function Navbar({ carritoCount, onOpenCart, setVistaActual, vista
       <div className="bg-slate-900 text-white text-[10px] md:text-xs font-bold py-2 text-center tracking-widest uppercase flex justify-center items-center gap-4">
         <span className="animate-pulse">🚚 Envíos seguros a todo el Ecuador</span>
         <span className="hidden md:inline text-slate-600">|</span>
-        <span className="text-yellow-400">Pagos Contraentrega en Quito</span>
+        <span className="text-yellow-400 animate-pulse">Pagos Contraentrega en Quito</span>
       </div>
 
       {/* 2. MAIN NAVBAR */}
