@@ -74,7 +74,7 @@ const CarritoLateral = ({ abierto, cerrar, carrito, total, eliminarItem, actuali
                 <span className="text-2xl font-bold text-slate-900">${total.toFixed(2)}</span>
               </div>
               <button onClick={finalizarCompraWhatsApp} className="w-full bg-green-600 hover:bg-green-700 text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-green-600/20 transition-all active:scale-95 cursor-pointer">
-                <MessageCircle size={20} /> Confirmar por WhatsApp
+                <MessageCircle size={20} /> Confirmar compra por WhatsApp
               </button>
             </div>
           )}

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Phone, MessageCircle } from 'lucide-react';
 
 // RUTAS / PÁGINAS
-import Navbar from './components/BarraNavegacion';
+// Asegúrate de que el archivo del navbar tenga el código nuevo que te pasé
+import Navbar from './components/BarraNavegacion'; 
 import CartDrawer from './components/CarritoLateral'; 
 import Home from './pages/Inicio';
 import Catalog from './pages/Catalogo';
@@ -17,101 +18,110 @@ import { PRODUCTOS } from "./data/inventario";
 function App() {
   const [vistaActual, setVistaActual] = useState("inicio");
   const [busqueda, setBusqueda] = useState("");
-  
-  // Estado para el producto seleccionado
   const [productoId, setProductoId] = useState(null);
 
-  const abrirProducto = (id) => {
-    setProductoId(id);
-    setVistaActual("producto");
-  };
-
-  // Encontrar el producto actual basado en el ID
-  const productoSeleccionado = PRODUCTOS.find(p => p.id === productoId);
-  
-  // Hook del carrito
   const { 
     carrito, isCarritoAbierto, setIsCarritoAbierto, agregarAlCarrito, 
     eliminarDelCarrito, actualizarCantidad, totalCarrito 
   } = useCarrito();
 
+  // --- LÓGICA DE DATOS ---
+  const motos = PRODUCTOS.filter(p => p.tipo === "Moto");
+  const autos = PRODUCTOS.filter(p => p.tipo === "Auto");
+  const hotwheels = PRODUCTOS.filter(p => p.tipo === "Hot Wheels");
+  
+  // Filtramos los destacados para el Home (8 productos)
+  // IMPORTANTE: Asegúrate de que en inventario.js tus productos tengan destacado: true
+  const destacados = PRODUCTOS
+    .filter(p => p.destacado === true)
+    .slice(0, 8); 
+
+  const productoSeleccionado = PRODUCTOS.find(p => p.id === productoId);
+
+  const abrirProducto = (id) => {
+    setProductoId(id);
+    setVistaActual("producto");
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const volverAlCatalogo = () => {
+    if (!productoSeleccionado) return setVistaActual('inicio');
+    if (productoSeleccionado.tipo === 'Moto') setVistaActual('motos');
+    else if (productoSeleccionado.tipo === 'Auto') setVistaActual('autos');
+    else if (productoSeleccionado.tipo === 'Hot Wheels') setVistaActual('hotwheels');
+    else setVistaActual('inicio');
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
       
-      {/* 1. NAVBAR */}
       <Navbar 
         carritoCount={carrito.reduce((acc, item) => acc + item.cantidad, 0)} 
         onOpenCart={() => setIsCarritoAbierto(true)}
         vistaActual={vistaActual}
         setVistaActual={setVistaActual}
-        busqueda={busqueda}
-        setBusqueda={setBusqueda}
       />
       
-      {/* 2. CONTENIDO PRINCIPAL */}
       <main className="flex-grow">
         
         {/* VISTA: INICIO */}
         {vistaActual === 'inicio' && (
-          <>
-            <Home setVistaActual={setVistaActual} />
-            <div className="py-10">
-                <Catalog
-                  agregarAlCarrito={agregarAlCarrito}
-                  onSelectProducto={abrirProducto} 
-                  modo="favoritos"
-                  titulo="Lo más vendido"
-                  subtitulo="Los modelos que más se llevan esta semana."
-                  limite={4}
-                  tipoFavoritos="masVendidos"
-                />
-            </div>
-          </>
+          <Home 
+            setVistaActual={setVistaActual} 
+            productos={destacados}             // <--- AQUÍ ESTABA EL ERROR: Faltaba pasar esto
+            agregarAlCarrito={agregarAlCarrito} // <--- Y esto
+          />
         )}
         
-        {/* VISTA: CATÁLOGO */}
-        {vistaActual === 'catalogo' && (
+        {/* VISTA: MOTOS */}
+        {vistaActual === 'motos' && (
            <Catalog 
+             productosIniciales={motos}
+             titulo="Motos a Escala"
+             subtitulo="Colección de motocicletas en escala 1:12 y 1:18"
              agregarAlCarrito={agregarAlCarrito}
              onSelectProducto={abrirProducto}
            />
         )}
 
-        {/* VISTA: PRUEBAS / ENVÍOS */}
+        {/* VISTA: AUTOS */}
+        {vistaActual === 'autos' && (
+           <Catalog 
+             productosIniciales={autos}
+             titulo="Autos a Escala"
+             subtitulo="Vehículos detallados de las mejores marcas"
+             agregarAlCarrito={agregarAlCarrito}
+             onSelectProducto={abrirProducto}
+           />
+        )}
+
+        {/* VISTA: HOT WHEELS */}
+        {vistaActual === 'hotwheels' && (
+           <Catalog 
+             productosIniciales={hotwheels}
+             titulo="Hot Wheels"
+             subtitulo="Modelos 1:64 para coleccionistas"
+             agregarAlCarrito={agregarAlCarrito}
+             onSelectProducto={abrirProducto}
+           />
+        )}
+
+        {/* VISTA: ENVÍOS */}
         {vistaActual === 'pruebas' && (
            <Pruebas setVistaActual={setVistaActual} />
         )}
 
-        {/* VISTA: DETALLE DE PRODUCTO */}
+        {/* VISTA: DETALLE */}
         {vistaActual === "producto" && (
           <ProductoDetalle
             producto={productoSeleccionado}
-            onVolver={() => setVistaActual("catalogo")}
+            onVolver={volverAlCatalogo}
             agregarAlCarrito={agregarAlCarrito}
           />
         )}
         
-        {/* VISTA: CONTACTO */}
-        {vistaActual === 'contacto' && (
-          <div className="max-w-2xl mx-auto py-20 px-4 text-center animate-fade-in">
-              <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-xl">
-                <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Phone className="w-8 h-8" />
-                </div>
-                <h2 className="text-3xl font-bold mb-4 text-slate-900">Hablemos</h2>
-                <p className="mb-8 text-slate-600">Estamos en Quito y realizamos envíos seguros por Servientrega a todo el país. Escríbenos para confirmar stock.</p>
-                <button onClick={() => window.open('https://wa.me/593958866618', '_blank')} className="w-full bg-slate-900 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-red-600 transition-colors shadow-lg shadow-slate-900/20 cursor-pointer">
-                  <MessageCircle /> Chatear ahora
-                </button>
-              </div>
-          </div>
-        )}
-
       </main>
 
-      {/* 3. COMPONENTES GLOBALES (Carrito, Footer, WhatsApp) */}
-      
       <CartDrawer
         abierto={isCarritoAbierto}
         cerrar={() => setIsCarritoAbierto(false)}
@@ -123,21 +133,27 @@ function App() {
       
       <Footer setVistaActual={setVistaActual} />
         
-      {/* Botón Flotante WhatsApp */}
-      <a
-        href="https://wa.me/593958866618" 
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 transition p-4 rounded-full shadow-2xl flex items-center justify-center cursor-pointer animate-bounce-slow"
-      >
-        <svg
-          className="w-7 h-7 text-white"
-          viewBox="0 0 32 32"
-          fill="currentColor"
+      {/* Botón WhatsApp Flotante (REAL Y CONDICIONAL) */}
+      {/* Solo se muestra si isCarritoAbierto es false */}
+      {!isCarritoAbierto && (
+        <a
+          href="https://wa.me/593958866618" 
+          target="_blank"
+          rel="noopener noreferrer"
+          // Usamos el color oficial de WhatsApp (#25D366) y una sombra suave
+          className="fixed bottom-6 right-6 z-50 bg-[#25D366] hover:bg-[#20bd5a] transition-all duration-300 p-3.5 rounded-full shadow-xl shadow-green-500/30 flex items-center justify-center cursor-pointer hover:-translate-y-1 animate-bounce-slow"
+          aria-label="Chat en WhatsApp"
         >
-          <path d="M16 0C7.164 0 0 7.163 0 16c0 2.836.742 5.58 2.156 8.004L.058 32l8.188-2.094A15.9 15.9 0 0 0 16 32c8.836 0 16-7.164 16-16S24.836 0 16 0zm0 29.09a13.02 13.02 0 0 1-6.64-1.82l-.476-.282-4.864 1.242 1.296-4.744-.308-.49A13.03 13.03 0 1 1 16 29.09zm7.558-9.83c-.412-.206-2.44-1.205-2.818-1.343-.378-.137-.654-.206-.93.206-.275.412-1.066 1.343-1.307 1.618-.24.275-.48.309-.893.103-.412-.206-1.742-.64-3.315-2.043-1.224-1.092-2.05-2.44-2.292-2.853-.24-.412-.026-.635.18-.84.185-.184.412-.48.618-.72.206-.24.275-.412.412-.687.137-.275.069-.515-.034-.72-.103-.206-.93-2.24-1.275-3.067-.336-.807-.678-.697-.93-.71l-.79-.014c-.275 0-.72.103-1.096.515-.378.412-1.444 1.41-1.444 3.44s1.478 3.994 1.684 4.27c.206.275 2.91 4.445 7.05 6.23.985.425 1.753.678 2.352.868.988.314 1.887.27 2.596.164.792-.118 2.44-.997 2.784-1.962.344-.964.344-1.79.24-1.962-.103-.172-.378-.275-.79-.48z"/>
-        </svg>
-      </a>
+          {/* SVG Oficial de WhatsApp */}
+          <svg 
+            viewBox="0 0 24 24" 
+            className="w-8 h-8 text-white fill-current"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+          </svg>
+        </a>
+      )}
     </div>
   );
 }
