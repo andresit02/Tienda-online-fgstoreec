@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Menu, X, Flame, Truck, Search } from 'lucide-react';
+import { ShoppingBag, Menu, X, Flame, Truck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar({ carritoCount, onOpenCart, setVistaActual, vistaActual }) {
@@ -13,11 +13,11 @@ export default function Navbar({ carritoCount, onOpenCart, setVistaActual, vista
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Link de Escritorio con estilo (TEXTO MÁS GRANDE: text-lg)
+  // Link de Escritorio con estilo (MANTENIENDO NEGRITA)
   const NavLink = ({ text, onClick, active, isHot = false, icon: Icon }) => (
     <button 
       onClick={onClick} 
-      className={`relative group flex items-center gap-2 py-2 transition-colors uppercase tracking-tight text-lg font-extrabold
+      className={`relative group flex items-center gap-2 py-2 transition-colors uppercase tracking-tight text-lg font-black
         ${active ? 'text-red-600' : 'text-slate-900 hover:text-red-600'}
         ${isHot ? 'text-orange-600 hover:text-orange-700' : ''}
       `}
@@ -34,95 +34,109 @@ export default function Navbar({ carritoCount, onOpenCart, setVistaActual, vista
   return (
     <>
       {/* ===================== 1. TOP BAR ===================== */}
-      <div className="bg-slate-900 text-white text-[10px] md:text-xs font-bold tracking-widest uppercase py-3 text-center relative z-50">
-        <div className="flex justify-center items-center gap-6 animate-fade-in">
-             <span className="flex items-center gap-2">
-                <Truck size={16} className="text-yellow-400" /> ENVÍOS SEGUROS A TODO EL ECUADOR
-             </span>
-             <span className="hidden md:inline text-slate-600">|</span>
-             <span className="hidden md:inline text-yellow-400">PAGOS CONTRAENTREGA EN QUITO</span>
+      <div className="bg-slate-900 text-white text-xs md:text-sm font-black tracking-wider uppercase py-3 text-center relative z-50">
+        {/* MODIFICACIÓN: Cambiado 'container' por 'max-w-7xl' y ajustado padding para alinear con el Nav */}
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-2 md:gap-8">
+            <span className="flex items-center gap-2">
+              <Truck size={18} className="text-yellow-400 flex-shrink-0" /> 
+              <span className="font-black">ENVÍOS SEGUROS A TODO EL ECUADOR</span>
+            </span>
+            <span className="hidden md:inline text-slate-600">|</span>
+            <span className="text-yellow-400 font-black">PAGOS CONTRAENTREGA EN QUITO</span>
+          </div>
         </div>
       </div>
 
       {/* ===================== 2. MAIN NAVBAR ===================== */}
-      {/* Ajuste de grosor: py-6 en escritorio (py-8 si no hay scroll) */}
       <nav 
-        className={`sticky top-0 z-40 bg-white transition-all duration-300 border-b border-slate-100
-          ${isScrolled ? 'shadow-md py-3' : 'py-5 md:py-8'} 
+        className={`sticky top-0 z-40 bg-white transition-all duration-300 border-b border-slate-200
+          ${isScrolled ? 'shadow-md py-3' : 'py-4 md:py-6'} 
         `}
       >
-        <div className="max-w-[1500px] mx-auto px-6 flex justify-between items-center gap-4">
-          
-          {/* A. LOGO (Tamaño ajustado para verse imponente) */}
-          <div 
-            onClick={() => setVistaActual('inicio')} 
-            className="flex-shrink-0 cursor-pointer"
-          >
-             <img 
-               src="https://res.cloudinary.com/dx0dmthm2/image/upload/v1769079552/imgi_1_fgstore-3-m2W8gONE7RhyPPPk_irglcf.png" 
-               alt="FG Store Logo" 
-               // Logo más grande cuando no hay scroll (h-20) y se reduce al bajar (h-14)
-               className={`object-contain transition-all duration-300 ${isScrolled ? 'h-12' : 'h-16 md:h-20'}`}
-             />
-          </div>
-
-          {/* B. NAVEGACIÓN DE ESCRITORIO (Separación aumentada gap-10) */}
-          <div className="hidden xl:flex items-center gap-10">
-            <NavLink text="Inicio" onClick={() => setVistaActual('inicio')} active={vistaActual === 'inicio'} />
-            <NavLink text="Motos a Escala" onClick={() => setVistaActual('motos')} active={vistaActual === 'motos'} />
-            <NavLink text="Autos a Escala" onClick={() => setVistaActual('autos')} active={vistaActual === 'autos'} />
+        {/* MODIFICACIÓN DE DISTRIBUCIÓN: 
+            1. Usamos 'max-w-7xl' en lugar de container para limitar el ancho en pantallas gigantes.
+            2. Añadimos 'mx-auto' para centrar todo el bloque.
+            3. Aumentamos el padding 'lg:px-8' para empujar los elementos hacia adentro visualmente.
+        */}
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
             
-            <NavLink 
-                text="HOTWHEELS" 
-                onClick={() => setVistaActual('hotwheels')} 
-                active={vistaActual === 'hotwheels'} 
-                isHot={true} 
-                icon={Flame} 
-            />
-            
-            <NavLink text="ENVÍOS" onClick={() => setVistaActual('pruebas')} active={vistaActual === 'pruebas'} />
-          </div>
-
-          {/* C. ACCIONES */}
-          <div className="flex items-center gap-5 md:gap-8">
-
-            {/* CARRITO (Icono más grande) */}
-            <button 
-              onClick={onOpenCart}
-              className="group flex items-center gap-3 pl-6 md:border-l border-slate-200"
+            {/* LOGO - Izquierda */}
+            <div 
+              onClick={() => setVistaActual('inicio')} 
+              className="cursor-pointer flex-shrink-0"
             >
-              <div className="relative">
-                <ShoppingBag size={30} className="text-slate-900 group-hover:text-red-600 transition-colors" strokeWidth={1.5} />
-                {carritoCount > 0 && (
-                  <motion.span 
-                    initial={{ scale: 0 }} animate={{ scale: 1 }}
-                    className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm"
-                  >
-                    {carritoCount}
-                  </motion.span>
-                )}
+              <img 
+                src="https://res.cloudinary.com/dx0dmthm2/image/upload/v1769311945/logoactualizado_rkbkby.png" 
+                alt="FG Store Logo" 
+                className={`object-contain transition-all duration-300 ${isScrolled ? 'h-14' : 'h-16 md:h-18'}`}
+              />
+            </div>
+
+            {/* NAVEGACIÓN CENTRAL - Desktop */}
+            {/* Mantenemos flex-1 para que ocupe el espacio central, pero el contenedor padre ya limita que se separen demasiado */}
+            <div className="hidden lg:flex items-center justify-center flex-1 mx-4 xl:mx-8">
+              <div className="flex items-center justify-center gap-5 xl:gap-8">
+                <NavLink text="Inicio" onClick={() => setVistaActual('inicio')} active={vistaActual === 'inicio'} />
+                <NavLink text="Motos a Escala" onClick={() => setVistaActual('motos')} active={vistaActual === 'motos'} />
+                <NavLink text="Autos a Escala" onClick={() => setVistaActual('autos')} active={vistaActual === 'autos'} />
+                
+                <NavLink 
+                  text="HOTWHEELS" 
+                  onClick={() => setVistaActual('hotwheels')} 
+                  active={vistaActual === 'hotwheels'} 
+                  isHot={true} 
+                  icon={Flame} 
+                />
+                
+                <NavLink text="ENVÍOS" onClick={() => setVistaActual('pruebas')} active={vistaActual === 'pruebas'} />
               </div>
+            </div>
+
+            {/* CARRITO Y MENÚ MÓVIL - Derecha */}
+            <div className="flex items-center gap-4">
               
-              <div className="hidden md:flex flex-col items-start leading-none">
-                 <span className="text-lg font-black text-slate-900 group-hover:text-red-600 transition-colors uppercase tracking-tight">
-                    CARRITO DE COMPRAS
-                 </span>
-              </div>
-            </button>
+              {/* CARRITO */}
+              <button 
+                onClick={onOpenCart}
+                className="group flex items-center gap-3 pl-4 border-l border-slate-200"
+              >
+                <div className="relative">
+                  <ShoppingBag size={32} className="text-slate-900 group-hover:text-red-600 transition-colors" strokeWidth={1.5} />
+                  {carritoCount > 0 && (
+                    <motion.span 
+                      initial={{ scale: 0 }} animate={{ scale: 1 }}
+                      className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-black w-6 h-6 flex items-center justify-center rounded-full border-2 border-white shadow-lg"
+                    >
+                      {carritoCount}
+                    </motion.span>
+                  )}
+                </div>
+                
+                <div className="hidden lg:flex flex-col items-start">
+                  <span className="text-lg font-black text-slate-900 group-hover:text-red-600 transition-colors uppercase tracking-tight leading-tight">
+                    CARRITO
+                  </span>
+                  <span className="text-xs text-slate-500 font-medium">
+                    {carritoCount} {carritoCount === 1 ? 'ítem' : 'ítems'}
+                  </span>
+                </div>
+              </button>
 
-            {/* Botón Menú Móvil */}
-            <button 
-              className="xl:hidden p-2 text-slate-900" 
-              onClick={() => setIsMobileMenuOpen(true)}
-            >
-              <Menu size={32} />
-            </button>
+              {/* Botón Menú Móvil */}
+              <button 
+                className="lg:hidden p-2 text-slate-900 hover:text-red-600 transition-colors" 
+                onClick={() => setIsMobileMenuOpen(true)}
+              >
+                <Menu size={32} strokeWidth={2} />
+              </button>
+            </div>
           </div>
-
         </div>
       </nav>
 
-      {/* ===================== 3. MENÚ MÓVIL ===================== */}
+      {/* ===================== 3. MENÚ MÓVIL (Sin cambios de lógica) ===================== */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
@@ -133,35 +147,85 @@ export default function Navbar({ carritoCount, onOpenCart, setVistaActual, vista
             />
             
             <motion.div 
-              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} 
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white z-50 shadow-2xl flex flex-col"
             >
-              <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <span className="font-black text-xl text-slate-900 uppercase tracking-tight">MENÚ</span>
-                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 bg-white rounded-full shadow-sm text-slate-500 hover:text-red-600 transition">
-                    <X size={24} />
+              <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white">
+                <div className="flex items-center gap-3">
+                  <img 
+                    src="https://res.cloudinary.com/dx0dmthm2/image/upload/v1769311945/logoactualizado_rkbkby.png" 
+                    alt="Logo" 
+                    className="h-10"
+                  />
+                  <span className="font-black text-xl text-slate-900 uppercase tracking-tight">MENÚ</span>
+                </div>
+                <button 
+                  onClick={() => setIsMobileMenuOpen(false)} 
+                  className="p-2 rounded-full hover:bg-slate-100 transition"
+                >
+                  <X size={24} className="text-slate-600" />
                 </button>
               </div>
               
-              <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-3">
-                <MobileLink onClick={() => {setVistaActual('inicio'); setIsMobileMenuOpen(false)}} text="Inicio" />
-                <MobileLink onClick={() => {setVistaActual('motos'); setIsMobileMenuOpen(false)}} text="Motos a Escala" />
-                <MobileLink onClick={() => {setVistaActual('autos'); setIsMobileMenuOpen(false)}} text="Autos a Escala" />
+              <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-2">
+                <MobileLink 
+                  onClick={() => {setVistaActual('inicio'); setIsMobileMenuOpen(false)}} 
+                  text="Inicio" 
+                  active={vistaActual === 'inicio'}
+                />
+                <MobileLink 
+                  onClick={() => {setVistaActual('motos'); setIsMobileMenuOpen(false)}} 
+                  text="Motos a Escala" 
+                  active={vistaActual === 'motos'}
+                />
+                <MobileLink 
+                  onClick={() => {setVistaActual('autos'); setIsMobileMenuOpen(false)}} 
+                  text="Autos a Escala" 
+                  active={vistaActual === 'autos'}
+                />
                 
-                <button 
-                    onClick={() => {setVistaActual('hotwheels'); setIsMobileMenuOpen(false)}} 
-                    className="flex items-center justify-between w-full p-4 rounded-xl bg-orange-50 text-orange-700 font-bold text-lg hover:bg-orange-100 transition-colors group"
-                >
-                    <span className="flex items-center gap-3"><Flame size={22} className="fill-orange-600" /> HOTWHEELS</span>
-                </button>
+                <MobileLink 
+                  onClick={() => {setVistaActual('hotwheels'); setIsMobileMenuOpen(false)}} 
+                  text="HOTWHEELS" 
+                  active={vistaActual === 'hotwheels'}
+                  isHot={true}
+                  icon={Flame}
+                />
 
-                <MobileLink onClick={() => {setVistaActual('pruebas'); setIsMobileMenuOpen(false)}} text="Galería de Envíos" icon={Truck} />
+                <MobileLink 
+                  onClick={() => {setVistaActual('pruebas'); setIsMobileMenuOpen(false)}} 
+                  text="ENVÍOS" 
+                  active={vistaActual === 'pruebas'}
+                  icon={Truck}
+                />
               </div>
 
-              <div className="p-8 bg-slate-900 text-white text-center text-xs">
-                <p className="opacity-60 mb-2 font-medium">FGSTOREEC - Passion for Scale</p>
-                <div className="flex justify-center gap-4">
-                    <span>Quito, Ecuador</span>
+              <div className="p-6 bg-slate-900 text-white">
+                <button 
+                  onClick={() => {onOpenCart(); setIsMobileMenuOpen(false)}}
+                  className="w-full bg-white/10 hover:bg-white/20 rounded-xl p-4 transition-colors flex items-center justify-between mb-4"
+                >
+                  <div className="flex items-center gap-3">
+                    <ShoppingBag size={24} className="text-white" />
+                    <div className="text-left">
+                      <p className="font-black text-lg">CARRITO DE COMPRAS</p>
+                      <p className="text-sm opacity-80">{carritoCount} {carritoCount === 1 ? 'ítem' : 'ítems'}</p>
+                    </div>
+                  </div>
+                  {carritoCount > 0 && (
+                    <span className="bg-red-600 text-white font-black text-sm w-8 h-8 flex items-center justify-center rounded-full">
+                      {carritoCount}
+                    </span>
+                  )}
+                </button>
+                
+                <div className="text-center">
+                  <p className="text-sm font-black mb-1">FGSTOREEC</p>
+                  <p className="text-xs opacity-80 mb-2">Passion for Scale Models</p>
+                  <div className="text-xs opacity-60">
+                    <p>Quito, Ecuador</p>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -172,15 +236,21 @@ export default function Navbar({ carritoCount, onOpenCart, setVistaActual, vista
   );
 }
 
-// Componente auxiliar móvil
-const MobileLink = ({ text, onClick, icon: Icon }) => (
-    <button 
-        onClick={onClick} 
-        className="flex items-center justify-between w-full p-4 rounded-xl text-slate-700 font-bold text-lg hover:bg-slate-50 hover:text-slate-900 transition-colors border border-transparent hover:border-slate-100"
-    >
-        <span className="flex items-center gap-3">
-            {Icon && <Icon size={22} className="text-slate-400" />}
-            {text}
-        </span>
-    </button>
+// Componente auxiliar móvil sin cambios
+const MobileLink = ({ text, onClick, active = false, isHot = false, icon: Icon }) => (
+  <button 
+    onClick={onClick} 
+    className={`flex items-center justify-between w-full p-4 rounded-xl text-lg font-black transition-all
+      ${active ? 'bg-red-50 text-red-600 border border-red-100' : 'text-slate-900 hover:bg-slate-50 hover:text-slate-900 border border-transparent'}
+      ${isHot ? 'bg-orange-50 text-orange-700 hover:bg-orange-100 border-orange-100' : ''}
+    `}
+  >
+    <span className="flex items-center gap-3">
+      {Icon && <Icon size={22} className={isHot ? "fill-orange-600" : "text-slate-400"} />}
+      {text}
+    </span>
+    {active && (
+      <div className="w-2 h-2 bg-current rounded-full"></div>
+    )}
+  </button>
 );
