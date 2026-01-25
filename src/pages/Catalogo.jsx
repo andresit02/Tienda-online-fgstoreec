@@ -251,19 +251,11 @@ const Catalogo = ({
                             <div key={uniqueKey} onClick={() => onSelectProducto?.(producto)} className="group bg-white rounded-xl border border-slate-100 hover:shadow-xl flex flex-col overflow-hidden cursor-pointer relative">
                                 
                                 {/* 1. IMAGEN: Altura ajustable h-36 (móvil) / h-60 (PC) */}
-                                <div className="relative h-36 sm:h-48 md:h-60 bg-slate-50 flex items-center justify-center p-4 overflow-hidden">
-                                    
-                                    {/* Escala (Oculta en accesorios) */}
-                                    {!esAccesorios && (
-                                        <span className="absolute top-2 left-2 md:top-3 md:left-3 bg-white/90 backdrop-blur text-[8px] md:text-[10px] font-bold px-1.5 py-0.5 md:px-2 md:py-1 rounded border border-slate-200 z-10 text-slate-600">
-                                            {producto.escala}
-                                        </span>
-                                    )}
-                                    
+                                <div className="relative h-36 sm:h-48 md:h-60 bg-slate-50 flex items-center justify-center p-4 overflow-hidden">                                    
                                     <img 
                                         src={producto.imagenes?.principal} 
                                         alt={producto.nombre} 
-                                        className={`w-full h-full object-contain transition-transform duration-500 group-hover:scale-110 ${!tieneStock && 'grayscale opacity-70'}`} 
+                                        className={`w-full h-full object-contain transition-transform duration-500 group-hover:scale-110`} 
                                         onError={(e) => e.currentTarget.src = "/img/placeholder.png"} 
                                     />
                                 </div>
