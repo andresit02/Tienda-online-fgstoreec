@@ -7,7 +7,7 @@ const Catalogo = ({
   subtitulo,
   agregarAlCarrito,
   onSelectProducto,
-  esAccesorios = false // FIX: Recibimos esto explícitamente para evitar errores si la lista está vacía
+  esAccesorios = false // FIX: Recibimos esto explícitamente para evitar errores
 }) => {
   // --- DETECCIÓN DE TIPO DE INVENTARIO ---
   const esHotWheels = useMemo(() => productosIniciales.some(p => p.categoria === 'Hot Wheels'), [productosIniciales]);
@@ -40,7 +40,7 @@ const Catalogo = ({
 
   // --- 1. EXTRAER OPCIONES ÚNICAS ---
   
-  // FIX: Cambiado 'marcaVehiculo' por 'marca' para coincidir con tus nuevos archivos
+  // FIX: Cambiado 'marcaVehiculo' por 'marca'
   const marcasDisponibles = useMemo(() => esAccesorios ? [] : [...new Set(productosIniciales.map(p => p.marca || "Otras"))].sort(), [productosIniciales, esAccesorios]);
   
   const fabricantesDisponibles = useMemo(() => (esHotWheels || esAccesorios) ? [] : [...new Set(productosIniciales.map(p => p.fabricante))].sort(), [productosIniciales, esHotWheels, esAccesorios]);
@@ -72,12 +72,9 @@ const Catalogo = ({
 
     // --- FILTROS ESPECÍFICOS ---
     if (esAccesorios) {
-        // Filtro de Accesorios: Solo "Tipo" (campo categoria)
         const coincideTipo = tiposAccesoriosSeleccionados.length === 0 || tiposAccesoriosSeleccionados.includes(p.categoria);
         return coincideTexto && coincideStock && coincideTipo;
     } else {
-        // Filtros de Vehículos
-        // FIX: Cambiado 'marcaVehiculo' por 'marca'
         const marcaProd = p.marca || "Otras";
         const coincideMarca = marcasSeleccionadas.length === 0 || marcasSeleccionadas.includes(marcaProd);
         
@@ -109,7 +106,7 @@ const Catalogo = ({
 
             <div className="space-y-8 pr-4">
                 
-                {/* 1. DISPONIBILIDAD (Universal) */}
+                {/* 1. DISPONIBILIDAD */}
                 <div>
                     <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-3">Disponibilidad</h3>
                     <div className="space-y-2">
@@ -149,7 +146,7 @@ const Catalogo = ({
                     </div>
                 )}
 
-                {/* --- FILTROS DE VEHÍCULOS (Solo si NO es accesorios) --- */}
+                {/* --- FILTROS DE VEHÍCULOS --- */}
                 {!esAccesorios && (
                     <>
                         {/* ESCALA */}
@@ -238,7 +235,8 @@ const Catalogo = ({
             </div>
 
             {productosProcesados.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-3 gap-6">
+                // GRID RESPONSIVO: 2 columnas en móvil, 3 en pantallas grandes
+                <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-6">
                     {productosProcesados.map((producto, index) => {
                         const tieneStock = producto.stock > 0;
                         const categoriaKey = producto.categoria || 'acc';
@@ -251,26 +249,64 @@ const Catalogo = ({
 
                         return (
                             <div key={uniqueKey} onClick={() => onSelectProducto?.(producto)} className="group bg-white rounded-xl border border-slate-100 hover:shadow-xl flex flex-col overflow-hidden cursor-pointer relative">
-                                <div className="relative h-60 bg-slate-50 flex items-center justify-center p-6 overflow-hidden">
+                                
+                                {/* 1. IMAGEN: Altura ajustable h-36 (móvil) / h-60 (PC) */}
+                                <div className="relative h-36 sm:h-48 md:h-60 bg-slate-50 flex items-center justify-center p-4 overflow-hidden">
                                     
-                                    {/* FIX: ELIMINADO EL SPAN DE ESCALA ENCIMA DE LA IMAGEN COMO PEDISTE */}
-
-                                    <img src={producto.imagenes?.principal} alt={producto.nombre} className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" onError={(e) => e.currentTarget.src = "/img/placeholder.png"} />
+                                    {/* Escala (Oculta en accesorios) */}
+                                    {!esAccesorios && (
+                                        <span className="absolute top-2 left-2 md:top-3 md:left-3 bg-white/90 backdrop-blur text-[8px] md:text-[10px] font-bold px-1.5 py-0.5 md:px-2 md:py-1 rounded border border-slate-200 z-10 text-slate-600">
+                                            {producto.escala}
+                                        </span>
+                                    )}
+                                    
+                                    <img 
+                                        src={producto.imagenes?.principal} 
+                                        alt={producto.nombre} 
+                                        className={`w-full h-full object-contain transition-transform duration-500 group-hover:scale-110 ${!tieneStock && 'grayscale opacity-70'}`} 
+                                        onError={(e) => e.currentTarget.src = "/img/placeholder.png"} 
+                                    />
                                 </div>
-                                <div className="p-5 flex-1 flex flex-col">
-                                    <div className="flex justify-between items-center mb-2">
+
+                                {/* 2. INFO: Padding ajustable p-3 (móvil) / p-5 (PC) */}
+                                <div className="p-3 md:p-5 flex-1 flex flex-col">
+                                    
+                                    <div className="flex justify-between items-center mb-2 gap-2">
                                         {tieneStock ? (
-                                            <span className="text-[10px] font-extrabold text-green-600 uppercase bg-green-50 px-2 py-0.5 rounded">Disponible</span>
+                                            <span className="text-[9px] md:text-[10px] font-extrabold text-green-600 uppercase bg-green-50 px-1.5 py-0.5 md:px-2 rounded">Disponible</span>
                                         ) : (
-                                            <span className="text-[10px] font-extrabold text-red-600 uppercase bg-red-50 px-2 py-0.5 rounded">Agotado</span>
+                                            <span className="text-[9px] md:text-[10px] font-extrabold text-red-600 uppercase bg-red-50 px-1.5 py-0.5 md:px-2 rounded">Agotado</span>
                                         )}
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{etiquetaSecundaria}</span>
+                                        <span className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest truncate max-w-[80px] md:max-w-none text-right">
+                                            {etiquetaSecundaria}
+                                        </span>
                                     </div>
-                                    <h3 className="text-base font-bold text-slate-900 leading-tight mb-4 group-hover:text-red-600 transition-colors line-clamp-2">{producto.nombre}</h3>
-                                    <div className="mt-auto flex items-center justify-between">
-                                        <span className="text-xl font-black text-slate-900">${producto.precio.toFixed(2)}</span>
-                                        <button disabled={!tieneStock} onClick={(e) => { e.stopPropagation(); if (tieneStock) agregarAlCarrito(producto); }} className={`p-2.5 rounded-lg transition-all shadow-sm ${tieneStock ? 'bg-slate-900 text-white hover:bg-red-600' : 'bg-slate-100 text-slate-300 cursor-not-allowed'}`}>
-                                            <ShoppingCart size={18} />
+
+                                    {/* Título adaptable */}
+                                    <h3 className="text-sm md:text-base font-bold text-slate-900 leading-tight mb-2 md:mb-4 group-hover:text-red-600 transition-colors line-clamp-2 min-h-[2.5em]">
+                                        {producto.nombre}
+                                    </h3>
+
+                                    <div className="mt-auto flex items-center justify-between gap-2">
+                                        {/* Precio adaptable */}
+                                        <span className="text-lg md:text-xl font-black text-slate-900">
+                                            ${producto.precio.toFixed(2)}
+                                        </span>
+                                        
+                                        {/* Botón adaptable */}
+                                        <button 
+                                            disabled={!tieneStock} 
+                                            onClick={(e) => { 
+                                                e.stopPropagation(); 
+                                                if (tieneStock) agregarAlCarrito(producto); 
+                                            }} 
+                                            className={`p-2 md:p-2.5 rounded-lg transition-all shadow-sm flex-shrink-0 
+                                                ${tieneStock 
+                                                    ? 'bg-slate-900 text-white hover:bg-red-600' 
+                                                    : 'bg-slate-100 text-slate-300 cursor-not-allowed'}
+                                            `}
+                                        >
+                                            <ShoppingCart size={18} className="w-4 h-4 md:w-[18px] md:h-[18px]" />
                                         </button>
                                     </div>
                                 </div>

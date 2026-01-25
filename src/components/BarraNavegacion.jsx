@@ -24,7 +24,6 @@ export default function Navbar({ carritoCount, onOpenCart, setVistaActual, vista
     >
       {Icon && <Icon size={22} className={isHot ? "fill-current" : ""} />}
       {text}
-      {/* Línea animada inferior */}
       <span className={`absolute bottom-0 left-0 h-[3px] bg-current transition-all duration-300 
         ${active ? 'w-full' : 'w-0 group-hover:w-full'}`}>
       </span>
@@ -53,67 +52,78 @@ export default function Navbar({ carritoCount, onOpenCart, setVistaActual, vista
           ${isScrolled ? 'shadow-md py-3' : 'py-4 md:py-6'} 
         `}
       >
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Contenedor principal con posición relativa para el centrado absoluto del logo en móvil */}
+        <div className="w-full max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 relative">
           <div className="flex items-center justify-between">
             
-            {/* LOGO - Izquierda */}
-            <div 
-              onClick={() => setVistaActual('inicio')} 
-              className="cursor-pointer flex-shrink-0"
-            >
-              <img 
-                src="https://res.cloudinary.com/dx0dmthm2/image/upload/v1769311945/logoactualizado_rkbkby.png" 
-                alt="FG Store Logo" 
-                className={`object-contain transition-all duration-300 ${isScrolled ? 'h-14' : 'h-16 md:h-18'}`}
-              />
+            {/* --- ZONA IZQUIERDA --- */}
+            <div className="flex items-center gap-4">
+                
+                {/* 1. Botón Menú Móvil (AHORA A LA IZQUIERDA) */}
+                <button 
+                    className="lg:hidden text-slate-900 hover:text-red-600 transition-colors p-1" 
+                    onClick={() => setIsMobileMenuOpen(true)}
+                >
+                    <Menu size={28} strokeWidth={2} />
+                </button>
+
+                {/* 2. LOGO (Solo visible en PC aquí) */}
+                <div 
+                    onClick={() => setVistaActual('inicio')} 
+                    className="cursor-pointer flex-shrink-0 hidden lg:block"
+                >
+                    <img 
+                        src="https://res.cloudinary.com/dx0dmthm2/image/upload/v1769311945/logoactualizado_rkbkby.png" 
+                        alt="FG Store Logo" 
+                        className={`object-contain transition-all duration-300 ${isScrolled ? 'h-14' : 'h-16 md:h-18'}`}
+                    />
+                </div>
             </div>
 
-            {/* NAVEGACIÓN CENTRAL - Desktop */}
+            {/* --- ZONA CENTRAL (Solo Móvil - Logo Centrado) --- */}
+            {/* Usamos posición absoluta para asegurar centro perfecto sin importar ancho de botones laterales */}
+            <div 
+                onClick={() => setVistaActual('inicio')} 
+                className="lg:hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+            >
+                <img 
+                    src="https://res.cloudinary.com/dx0dmthm2/image/upload/v1769311945/logoactualizado_rkbkby.png" 
+                    alt="FG Store Logo" 
+                    className="h-10 sm:h-12 object-contain"
+                />
+            </div>
+
+            {/* --- ZONA CENTRAL (Solo PC - Links) --- */}
             <div className="hidden lg:flex items-center justify-center flex-1 mx-4 xl:mx-8">
               <div className="flex items-center justify-center gap-5 xl:gap-8">
                 <NavLink text="Inicio" onClick={() => setVistaActual('inicio')} active={vistaActual === 'inicio'} />
                 <NavLink text="Motos a Escala" onClick={() => setVistaActual('motos')} active={vistaActual === 'motos'} />
                 <NavLink text="Autos a Escala" onClick={() => setVistaActual('autos')} active={vistaActual === 'autos'} />
-                
-                <NavLink 
-                  text="HOTWHEELS" 
-                  onClick={() => setVistaActual('hotwheels')} 
-                  active={vistaActual === 'hotwheels'} 
-                  isHot={true} 
-                  icon={Flame} 
-                />
-
-                {/* --- NUEVO LINK ACCESORIOS --- */}
-                <NavLink 
-                  text="ACCESORIOS" 
-                  onClick={() => setVistaActual('accesorios')} 
-                  active={vistaActual === 'accesorios'} 
-                />
-                
+                <NavLink text="HOTWHEELS" onClick={() => setVistaActual('hotwheels')} active={vistaActual === 'hotwheels'} isHot={true} icon={Flame} />
+                <NavLink text="ACCESORIOS" onClick={() => setVistaActual('accesorios')} active={vistaActual === 'accesorios'} />
                 <NavLink text="ENVÍOS" onClick={() => setVistaActual('pruebas')} active={vistaActual === 'pruebas'} />
               </div>
             </div>
 
-            {/* CARRITO Y MENÚ MÓVIL - Derecha */}
+            {/* --- ZONA DERECHA (Carrito) --- */}
             <div className="flex items-center gap-4">
-              
-              {/* CARRITO */}
               <button 
                 onClick={onOpenCart}
-                className="group flex items-center gap-3 pl-4 border-l border-slate-200"
+                className="group flex items-center gap-3 lg:pl-4 lg:border-l border-slate-200"
               >
-                <div className="relative">
-                  <ShoppingBag size={32} className="text-slate-900 group-hover:text-red-600 transition-colors" strokeWidth={1.5} />
+                <div className="relative p-1">
+                  <ShoppingBag size={28} className="text-slate-900 group-hover:text-red-600 transition-colors md:w-8 md:h-8" strokeWidth={1.5} />
                   {carritoCount > 0 && (
                     <motion.span 
                       initial={{ scale: 0 }} animate={{ scale: 1 }}
-                      className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-black w-6 h-6 flex items-center justify-center rounded-full border-2 border-white shadow-lg"
+                      className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-lg"
                     >
                       {carritoCount}
                     </motion.span>
                   )}
                 </div>
                 
+                {/* Texto Carrito (Solo PC) */}
                 <div className="hidden lg:flex flex-col items-start">
                   <span className="text-lg font-black text-slate-900 group-hover:text-red-600 transition-colors uppercase tracking-tight leading-tight">
                     CARRITO
@@ -123,15 +133,8 @@ export default function Navbar({ carritoCount, onOpenCart, setVistaActual, vista
                   </span>
                 </div>
               </button>
-
-              {/* Botón Menú Móvil */}
-              <button 
-                className="lg:hidden p-2 text-slate-900 hover:text-red-600 transition-colors" 
-                onClick={() => setIsMobileMenuOpen(true)}
-              >
-                <Menu size={32} strokeWidth={2} />
-              </button>
             </div>
+
           </div>
         </div>
       </nav>
@@ -147,9 +150,9 @@ export default function Navbar({ carritoCount, onOpenCart, setVistaActual, vista
             />
             
             <motion.div 
-              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} 
+              initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} 
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white z-50 shadow-2xl flex flex-col"
+              className="fixed top-0 left-0 h-full w-[85%] max-w-sm bg-white z-50 shadow-2xl flex flex-col"
             >
               <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white">
                 <div className="flex items-center gap-3">
@@ -169,43 +172,12 @@ export default function Navbar({ carritoCount, onOpenCart, setVistaActual, vista
               </div>
               
               <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-2">
-                <MobileLink 
-                  onClick={() => {setVistaActual('inicio'); setIsMobileMenuOpen(false)}} 
-                  text="Inicio" 
-                  active={vistaActual === 'inicio'}
-                />
-                <MobileLink 
-                  onClick={() => {setVistaActual('motos'); setIsMobileMenuOpen(false)}} 
-                  text="Motos a Escala" 
-                  active={vistaActual === 'motos'}
-                />
-                <MobileLink 
-                  onClick={() => {setVistaActual('autos'); setIsMobileMenuOpen(false)}} 
-                  text="Autos a Escala" 
-                  active={vistaActual === 'autos'}
-                />
-                
-                <MobileLink 
-                  onClick={() => {setVistaActual('hotwheels'); setIsMobileMenuOpen(false)}} 
-                  text="HOTWHEELS" 
-                  active={vistaActual === 'hotwheels'}
-                  isHot={true}
-                  icon={Flame}
-                />
-
-                {/* --- NUEVO LINK MÓVIL ACCESORIOS --- */}
-                <MobileLink 
-                  onClick={() => {setVistaActual('accesorios'); setIsMobileMenuOpen(false)}} 
-                  text="ACCESORIOS" 
-                  active={vistaActual === 'accesorios'}
-                />
-
-                <MobileLink 
-                  onClick={() => {setVistaActual('pruebas'); setIsMobileMenuOpen(false)}} 
-                  text="ENVÍOS" 
-                  active={vistaActual === 'pruebas'}
-                  icon={Truck}
-                />
+                <MobileLink onClick={() => {setVistaActual('inicio'); setIsMobileMenuOpen(false)}} text="Inicio" active={vistaActual === 'inicio'} />
+                <MobileLink onClick={() => {setVistaActual('motos'); setIsMobileMenuOpen(false)}} text="Motos a Escala" active={vistaActual === 'motos'} />
+                <MobileLink onClick={() => {setVistaActual('autos'); setIsMobileMenuOpen(false)}} text="Autos a Escala" active={vistaActual === 'autos'} />
+                <MobileLink onClick={() => {setVistaActual('hotwheels'); setIsMobileMenuOpen(false)}} text="HOTWHEELS" active={vistaActual === 'hotwheels'} isHot={true} icon={Flame} />
+                <MobileLink onClick={() => {setVistaActual('accesorios'); setIsMobileMenuOpen(false)}} text="ACCESORIOS" active={vistaActual === 'accesorios'} />
+                <MobileLink onClick={() => {setVistaActual('pruebas'); setIsMobileMenuOpen(false)}} text="ENVÍOS" active={vistaActual === 'pruebas'} icon={Truck} />
               </div>
 
               <div className="p-6 bg-slate-900 text-white">
