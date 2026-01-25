@@ -4,21 +4,38 @@ import {WhatsappIcon} from './SocialMediaIcons';
 
 const CarritoLateral = ({ abierto, cerrar, carrito, total, eliminarItem, actualizarCantidad }) => {
   
-  const finalizarCompraWhatsApp = () => {
-    const numeroTelefono = "593958866618"; // He actualizado tu número aquí basado en el contexto previo
-    let mensaje = "Hola FG Store! 👋 Quisiera confirmar este pedido:%0A%0A";
-    
-    carrito.forEach(item => {
-      // Ajuste opcional: Mostrar Marca si existe, o Fabricante, o Serie para HotWheels
+const finalizarCompraWhatsApp = () => {
+    // 1. Generar ID Único (Vital para que n8n sepa que es una venta real)
+    const orderId = `WEB-${Date.now().toString().slice(-6)}`;
+    const numeroTelefono = "593958866618"; 
+
+    // 2. Construir lista de productos
+    // NOTA: Cambié "▪️" por "📦" porque tu código en n8n busca la cajita para extraer los productos.
+    const productosTexto = carrito.map(item => {
+      // Tu lógica original: Mostrar Serie para HotWheels o Marca para el resto
       const detalle = item.categoria === 'Hot Wheels' ? item.serie : item.marca;
-      mensaje += `▪️ ${item.cantidad}x ${item.nombre} (${detalle || ''}) - $${(item.precio * item.cantidad).toFixed(2)}%0A`;
-    });
+      const nombreFinal = detalle ? `${item.nombre} (${detalle})` : item.nombre;
+      
+      // Formato exacto: 📦 Cantidadx Nombre - $Precio
+      return `📦 ${item.cantidad}x ${nombreFinal} - $${(item.precio * item.cantidad).toFixed(2)}`;
+    }).join('\n'); // Unimos con saltos de línea reales
+
+    // 3. Armar el mensaje con el formato "Blindado" para n8n
+    const mensaje = `🆔 PEDIDO WEB: #${orderId}
+--------------------------------
+${productosTexto}
+--------------------------------
+💰 *TOTAL: $${total.toFixed(2)}*
+
+Hola FG Store! 👋 Quisiera confirmar este pedido y recibir los datos de pago.`;
+
+    // 4. Enviar
+    // Usamos encodeURIComponent para manejar emojis y saltos de línea automáticamente sin usar %0A manuales
+    const url = `https://wa.me/${numeroTelefono}?text=${encodeURIComponent(mensaje)}`;
     
-    mensaje += `%0A💰 *TOTAL: $${total.toFixed(2)}*%0A`;
-    mensaje += "%0AQuedo atento a los datos para la transferencia o link de pago.";
-    
-    window.open(`https://wa.me/${numeroTelefono}?text=${mensaje}`, '_blank');
+    window.open(url, '_blank');
   };
+
 
   return (
     <>
