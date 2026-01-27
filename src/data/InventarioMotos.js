@@ -7,7 +7,7 @@ export const INVENTARIO_MOTOS = [
     escala: "1:12",
     precio: 35,
     categoria: "Moto",
-    stock: 1,
+    stock: 0,
     destacado: false,
     imagenes: {
       principal: "https://res.cloudinary.com/dx0dmthm2/image/upload/v1769095533/D_NQ_NP_2X_629279-MLU73267337297_122023-F_qp3zhr.webp",
@@ -35,7 +35,7 @@ export const INVENTARIO_MOTOS = [
     escala: "1:12",
     precio: 35,
     categoria: "Moto",
-    stock: 1,
+    stock: 0,
     destacado: true,
     imagenes: {
       principal: "https://res.cloudinary.com/dx0dmthm2/image/upload/v1769156399/imgi_106_store_01JPB7BHTY6WKC6WA5QMHVK4B6_assets_1742713606624-photo_5116222544473600082_y_dxnrdp.jpg",
@@ -63,7 +63,7 @@ export const INVENTARIO_MOTOS = [
     escala: "1:12",
     precio: 35,
     categoria: "Moto",
-    stock: 1,
+    stock: 0,
     destacado: true,
     imagenes: {
       principal: "https://res.cloudinary.com/dx0dmthm2/image/upload/v1769156702/imgi_101_store_01JPB7BHTY6WKC6WA5QMHVK4B6_assets_1742668619265-photo_5114261419456572863_y_veu3xb.jpg",
@@ -359,7 +359,7 @@ export const INVENTARIO_MOTOS = [
     escala: "1:12",
     precio: 35,
     categoria: "Moto",
-    stock: 1,
+    stock: 0,
     destacado: false,
     imagenes: {
       principal: "https://res.cloudinary.com/dx0dmthm2/image/upload/v1769280090/imgi_111_store_01JPB7BHTY6WKC6WA5QMHVK4B6_assets_1744781954902-322723yl-box__98571_dsv5dh.jpg",
