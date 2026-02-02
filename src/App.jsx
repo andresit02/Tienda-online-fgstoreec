@@ -1,5 +1,7 @@
+import AdminDashboard from './pages/AdminDashboard';
 import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom'; 
+import { Toaster } from 'react-hot-toast'; // 1. Importación de la librería
 
 import Navbar from './components/BarraNavegacion'; 
 import CartDrawer from './components/CarritoLateral'; 
@@ -9,7 +11,6 @@ import Pruebas from './pages/Pruebas';
 import ProductoDetalle from "./pages/ProductoDetalle";
 import Footer from "./components/Footer";
 
-// 1. IMPORTAMOS EL HOOK QUE CREAMOS (Y ELIMINAMOS LOS INVENTARIOS ESTATICOS)
 import { useCarrito } from './hooks/useCarrito';
 import { useProductos } from './hooks/useProductos';
 
@@ -27,16 +28,15 @@ function App() {
     eliminarDelCarrito, actualizarCantidad, totalCarrito 
   } = useCarrito();
 
-  // 2. OBTENEMOS LOS DATOS REALES DE LA NUBE
+  // OBTENEMOS LOS DATOS REALES DE LA NUBE
   const { productos, loading } = useProductos();
 
-  // Pantalla de carga simple para que no de error mientras bajan los datos
+  // Pantalla de carga simple
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center font-bold">Cargando Tienda...</div>;
   }
 
-  // 3. FILTRAMOS LOS PRODUCTOS QUE VIENEN DE LA BD PARA CADA RUTA
-  // (Nota: Asegúrate que en tu BD las categorías sean exactamente estas: "Motos", "Autos", "Hot Wheels", "Accesorios")
+  // FILTRAMOS LOS PRODUCTOS
   const listaMotos = productos.filter(p => p.categoria === 'Motos');
   const listaAutos = productos.filter(p => p.categoria === 'Autos');
   const listaHotWheels = productos.filter(p => p.categoria === 'Hot Wheels');
@@ -47,6 +47,9 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
       <ScrollToTop />
+      
+      {/* 2. AQUÍ COLOCAMOS EL COMPONENTE PARA QUE SE VEAN LAS NOTIFICACIONES */}
+      <Toaster position="top-center" reverseOrder={false} />
       
       <Navbar 
         carritoCount={carrito.reduce((acc, item) => acc + item.cantidad, 0)} 
@@ -62,7 +65,6 @@ function App() {
             />
           } />
 
-          {/* 4. PASAMOS LAS LISTAS FILTRADAS A CADA CATÁLOGO */}
           <Route path="/motos" element={
              <Catalog 
                productosIniciales={listaMotos}
@@ -99,7 +101,10 @@ function App() {
 
           <Route path="/envios" element={ <Pruebas /> } />
 
-          {/* 5. PASAMOS LA LISTA COMPLETA AL DETALLE PARA QUE PUEDA BUSCAR POR ID */}
+          {/* RUTA DE ADMIN */}
+          <Route path="/admin" element={ <AdminDashboard /> } />
+
+          {/* DETALLE DE PRODUCTO */}
           <Route path="/producto/:categoria/:id" element={
             <ProductoDetalle
               agregarAlCarrito={agregarAlCarrito}
