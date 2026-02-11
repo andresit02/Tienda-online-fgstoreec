@@ -1,39 +1,47 @@
 import React, { useState, useEffect } from "react";
 import { ArrowLeft, Check } from "lucide-react";
+// 1. IMPORTAMOS useParams y useNavigate
 import { useParams, useNavigate } from "react-router-dom";
+// 2. IMPORTAMOS LA AYUDA PARA COMPARAR NOMBRES
+import { crearSlug } from "../helpers/slug";
 
-// 1. YA NO IMPORTAMOS LOS INVENTARIOS ESTATICOS AQUI
-
-function ProductoDetalle({ agregarAlCarrito, todosLosProductos }) { // <--- Recibimos la lista completa
-  const { id } = useParams(); 
+function ProductoDetalle({ agregarAlCarrito, todosLosProductos }) {
+  // Ahora recibimos 'slug' en lugar de 'id'
+  const { categoria, slug } = useParams(); 
   const navigate = useNavigate();
   
   const [producto, setProducto] = useState(null);
   const [imagenActiva, setImagenActiva] = useState(null);
 
   useEffect(() => {
-    // 2. BUSCAMOS EL PRODUCTO DIRECTAMENTE EN LA LISTA QUE VINO DE LA API
+    // BUSCAMOS EL PRODUCTO POR SU NOMBRE (SLUG)
     if (todosLosProductos && todosLosProductos.length > 0) {
-      const encontrado = todosLosProductos.find(p => p.id === parseInt(id));
+      const encontrado = todosLosProductos.find(p => crearSlug(p.nombre) === slug);
       
       if (encontrado) {
         setProducto(encontrado);
         setImagenActiva(encontrado.imagenes?.principal);
       }
     }
-  }, [id, todosLosProductos]);
+  }, [slug, todosLosProductos]); // Se ejecuta si cambia el slug o la lista
+
+  // --- SOLUCIÓN PROBLEMA 1: NAVEGACIÓN SEGURA ---
+  const handleVolver = () => {
+    // En lugar de navigate(-1), le decimos explícitamente a dónde ir
+    // Si la categoría es 'hotwheels', vamos a /hotwheels, etc.
+    navigate(`/${categoria}`);
+  };
 
   if (!producto) {
     return (
-      <div className="min-h-[50vh] flex flex-col items-center justify-center">
-        <p className="text-slate-500 mb-4">Cargando detalles...</p>
-        <button onClick={() => navigate('/')} className="text-blue-600 underline">Volver al inicio</button>
+      <div className="min-h-[50vh] flex flex-col items-center justify-center font-sans">
+        <p className="text-slate-500 mb-4">Buscando producto...</p>
+        <button onClick={() => navigate('/')} className="text-blue-600 underline">Ir al inicio</button>
       </div>
     );
   }
 
   const tieneStock = producto.stock > 0;
-  // Manejo seguro de galería por si viene vacía de la BD
   const listaImagenes = producto.imagenes?.galeria 
     ? [producto.imagenes.principal, ...producto.imagenes.galeria] 
     : [producto.imagenes?.principal];
@@ -44,11 +52,12 @@ function ProductoDetalle({ agregarAlCarrito, todosLosProductos }) { // <--- Reci
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 animate-fade-in font-sans">
       
+      {/* BOTÓN VOLVER INTELIGENTE */}
       <button 
-        onClick={() => navigate(-1)} 
+        onClick={handleVolver} 
         className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold mb-8 transition-colors"
       >
-        <ArrowLeft size={18} /> Volver
+        <ArrowLeft size={18} /> Volver a {categoria}
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 bg-white rounded-3xl border border-slate-100 shadow-xl p-6 lg:p-8">
@@ -74,7 +83,7 @@ function ProductoDetalle({ agregarAlCarrito, todosLosProductos }) { // <--- Reci
 
         {/* INFO */}
         <div className="lg:col-span-5 flex flex-col">
-          <h1 className="text-4xl font-extrabold text-slate-900 leading-tight">{producto.nombre}</h1>
+          <h1 className="text-4xl font-extrabold text-slate-900 leading-tight uppercase">{producto.nombre}</h1>
           <p className="text-2xl font-bold text-slate-900 mt-3 border-b border-slate-100 pb-4">${producto.precio.toFixed(2)}</p>
           <p className="text-slate-600 mt-6 leading-relaxed">{producto.descripcion}</p>
 

@@ -105,7 +105,7 @@ function App() {
           <Route path="/admin" element={ <AdminDashboard /> } />
 
           {/* DETALLE DE PRODUCTO */}
-          <Route path="/producto/:categoria/:id" element={
+          <Route path="/producto/:categoria/:slug" element={
             <ProductoDetalle
               agregarAlCarrito={agregarAlCarrito}
               todosLosProductos={productos} 

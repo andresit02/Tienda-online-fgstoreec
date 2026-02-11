@@ -6,6 +6,7 @@ import {
 // 1. IMPORTAR HOOK DE NAVEGACIÓN
 import { useNavigate } from "react-router-dom";
 import {TikTokIcon, InstagramIcon, FacebookIcon} from "../components/SocialMediaIcons";
+import { crearSlug } from '../helpers/slug';
 
 const Inicio = ({ productos, agregarAlCarrito, onSelectProducto }) => {
   // 2. INICIALIZAR HOOK
@@ -122,12 +123,12 @@ const Inicio = ({ productos, agregarAlCarrito, onSelectProducto }) => {
                   onClick={() => {
                     // onSelectProducto(prod); <-- Opcional si quieres mantener estado, pero con rutas es mejor navigate
                     let rutaCategoria = 'otros';
-                    if (prod.categoria === 'Moto') rutaCategoria = 'motos';
-                    else if (prod.categoria === 'Auto') rutaCategoria = 'autos';
+                    if (prod.categoria === 'Motos') rutaCategoria = 'motos';
+                    else if (prod.categoria === 'Autos') rutaCategoria = 'autos';
                     else if (prod.categoria === 'Hot Wheels') rutaCategoria = 'hotwheels';
                     else rutaCategoria = 'accesorios';
                     
-                    navigate(`/producto/${rutaCategoria}/${prod.id}`);
+                    navigate(`/producto/${rutaCategoria}/${crearSlug(prod.nombre)}`);
                   }}
                   className="bg-white rounded-xl md:rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 overflow-hidden group flex flex-col cursor-pointer"
                 >

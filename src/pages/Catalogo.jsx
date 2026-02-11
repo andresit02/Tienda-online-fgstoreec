@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Search, ShoppingCart, CheckCircle, Filter, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom'; // <--- IMPORTAR
+import { crearSlug } from '../helpers/slug';
 
 const Catalogo = ({
   productosIniciales = [],
@@ -245,11 +246,11 @@ const Catalogo = ({
                                 // CAMBIO: Usamos navigate para ir a la URL del producto
                                 onClick={() => {
                                     let rutaCategoria = 'otros';
-                                    if (producto.categoria === 'Moto') rutaCategoria = 'motos';
-                                    else if (producto.categoria === 'Auto') rutaCategoria = 'autos';
+                                    if (producto.categoria === 'Motos') rutaCategoria = 'motos';
+                                    else if (producto.categoria === 'Autos') rutaCategoria = 'autos';
                                     else if (producto.categoria === 'Hot Wheels') rutaCategoria = 'hotwheels';
                                     else rutaCategoria = 'accesorios'; 
-                                    navigate(`/producto/${rutaCategoria}/${producto.id}`);
+                                    navigate(`/producto/${rutaCategoria}/${crearSlug(producto.nombre)}`);
                                 }} 
                                 className="group bg-white rounded-xl border border-slate-100 hover:shadow-xl flex flex-col overflow-hidden cursor-pointer relative"
                             >
